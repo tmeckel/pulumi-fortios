@@ -2782,6 +2782,12 @@ func Provider() tfbridge.ProviderInfo {
 				Tok: makeDataSource(mainMod, "fortios_user_samllist"),
 			},
 		},
+		IgnoreMappings: []string{
+			"fortios_vpn_ipsec_phase1interface", // deprecated
+			"fortios_vpn_ipsec_phase2interface", // deprecated
+			"fortios_log_fortianalyzer_setting", // deprecated
+			"fortios_firewall_security_policy",  // deprecated
+		},
 		JavaScript: &tfbridge.JavaScriptInfo{
 			PackageName: "@pulumiverse/fortios",
 
