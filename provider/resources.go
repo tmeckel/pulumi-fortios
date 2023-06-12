@@ -517,9 +517,6 @@ func Provider() tfbridge.ProviderInfo {
 			"fortios_firewall_region": {
 				Tok: makeResource(mainMod, "fortios_firewall_region"),
 			},
-			"fortios_firewall_security_policy": {
-				Tok: makeResource(mainMod, "fortios_firewall_security_policy"),
-			},
 			"fortios_firewall_security_policyseq": {
 				Tok: makeResource(mainMod, "fortios_firewall_security_policyseq"),
 			},
@@ -750,9 +747,6 @@ func Provider() tfbridge.ProviderInfo {
 			},
 			"fortios_log_eventfilter": {
 				Tok: makeResource(mainMod, "fortios_log_eventfilter"),
-			},
-			"fortios_log_fortianalyzer_setting": {
-				Tok: makeResource(mainMod, "fortios_log_fortianalyzer_setting"),
 			},
 			"fortios_log_guidisplay": {
 				Tok: makeResource(mainMod, "fortios_log_guidisplay"),
@@ -1770,12 +1764,6 @@ func Provider() tfbridge.ProviderInfo {
 			},
 			"fortios_voip_profile": {
 				Tok: makeResource(mainMod, "fortios_voip_profile"),
-			},
-			"fortios_vpn_ipsec_phase1interface": {
-				Tok: makeResource(mainMod, "fortios_vpn_ipsec_phase1interface"),
-			},
-			"fortios_vpn_ipsec_phase2interface": {
-				Tok: makeResource(mainMod, "fortios_vpn_ipsec_phase2interface"),
 			},
 			"fortios_vpn_l2tp": {
 				Tok: makeResource(mainMod, "fortios_vpn_l2tp"),
