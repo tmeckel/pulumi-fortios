@@ -1,9 +1,11 @@
+ROOT_DIR         := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 SHELL            := /bin/bash
 PROJECT          := github.com/pulumiverse/pulumi-fortios
 NODE_MODULE_NAME := @pulumiverse/fortios
 TF_NAME          := fortios
 PROVIDER_PATH    := provider
 VERSION_PATH     := ${PROVIDER_PATH}/pkg/version.Version
+PULUMI_REPO_PATHS:= github.com/fortinetdev/terraform-provider-fortios=$(ROOT_DIR)/upstream
 
 JAVA_GEN         := pulumi-java-gen
 JAVA_GEN_VERSION := v0.9.3
@@ -37,15 +39,19 @@ validate_go_version: ## Validates the installed version of go
 		exit 1 ;\
 	fi
 
+upstream/.git:
+	@echo "Initializing upstream" ; \
+	git clone  --depth 1 --branch v1.16.0 git@github.com:fortinetdev/terraform-provider-fortios upstream
+
 development:: install_plugins provider lint_provider build_sdks install_sdks cleanup # Build the provider & SDKs for a development environment
 
 # Required for the codegen action that runs in pulumi/pulumi and pulumi/pulumi-terraform-bridge
 build:: install_plugins provider build_sdks install_sdks
 only_build:: build
 
-tfgen:: install_plugins
+tfgen:: install_plugins upstream/.git
 	(cd provider && go build -o $(WORKING_DIR)/bin/${TFGEN} -ldflags "-X ${PROJECT}/${VERSION_PATH}=${VERSION}" ${PROJECT}/${PROVIDER_PATH}/cmd/${TFGEN})
-	$(WORKING_DIR)/bin/${TFGEN} schema --out provider/cmd/${PROVIDER}
+	PULUMI_REPO_PATHS='$(PULUMI_REPO_PATHS)' $(WORKING_DIR)/bin/${TFGEN} schema --out provider/cmd/${PROVIDER}
 	(cd provider && VERSION=$(VERSION) go generate cmd/${PROVIDER}/main.go)
 
 provider:: tfgen install_plugins # build the provider binary
