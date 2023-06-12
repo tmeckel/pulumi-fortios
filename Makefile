@@ -61,7 +61,7 @@ build_sdks:: install_plugins provider build_nodejs build_python build_go build_d
 
 build_nodejs:: VERSION := $(shell pulumictl get version --language javascript)
 build_nodejs:: install_plugins tfgen # build the node sdk
-	$(WORKING_DIR)/bin/$(TFGEN) nodejs --overlays provider/overlays/nodejs --out sdk/nodejs/
+	PULUMI_REPO_PATHS='$(PULUMI_REPO_PATHS)' $(WORKING_DIR)/bin/$(TFGEN) nodejs --overlays provider/overlays/nodejs --out sdk/nodejs/
 	cd sdk/nodejs/ && \
         yarn install && \
         yarn run tsc && \
@@ -71,7 +71,7 @@ build_nodejs:: install_plugins tfgen # build the node sdk
 
 build_python:: PYPI_VERSION := $(shell pulumictl get version --language python)
 build_python:: install_plugins tfgen # build the python sdk
-	$(WORKING_DIR)/bin/$(TFGEN) python --overlays provider/overlays/python --out sdk/python/
+	PULUMI_REPO_PATHS='$(PULUMI_REPO_PATHS)' $(WORKING_DIR)/bin/$(TFGEN) python --overlays provider/overlays/python --out sdk/python/
 	cd sdk/python/ && \
         cp ../../README.md . && \
         python3 setup.py clean --all 2>/dev/null && \
@@ -83,19 +83,19 @@ build_python:: install_plugins tfgen # build the python sdk
 build_dotnet:: DOTNET_VERSION := $(shell pulumictl get version --language dotnet)
 build_dotnet:: install_plugins tfgen # build the dotnet sdk
 	pulumictl get version --language dotnet
-	$(WORKING_DIR)/bin/$(TFGEN) dotnet --overlays provider/overlays/dotnet --out sdk/dotnet/
+	PULUMI_REPO_PATHS='$(PULUMI_REPO_PATHS)' $(WORKING_DIR)/bin/$(TFGEN) dotnet --overlays provider/overlays/dotnet --out sdk/dotnet/
 	cd sdk/dotnet/ && \
 		echo "${DOTNET_VERSION}" >version.txt && \
         dotnet build /p:Version=${DOTNET_VERSION}
 
 build_go:: install_plugins tfgen # build the go sdk
-	$(WORKING_DIR)/bin/$(TFGEN) go --overlays provider/overlays/go --out sdk/go/
+	PULUMI_REPO_PATHS='$(PULUMI_REPO_PATHS)' $(WORKING_DIR)/bin/$(TFGEN) go --overlays provider/overlays/go --out sdk/go/
 	cd sdk/go/ && \
 		go mod tidy
 
 build_java:: PACKAGE_VERSION := $(shell pulumictl get version --language generic)
 build_java:: $(WORKING_DIR)/bin/$(JAVA_GEN)
-	$(WORKING_DIR)/bin/$(JAVA_GEN) generate --schema provider/cmd/$(PROVIDER)/schema.json --out sdk/java  --build gradle-nexus
+	PULUMI_REPO_PATHS='$(PULUMI_REPO_PATHS)' $(WORKING_DIR)/bin/$(JAVA_GEN) generate --schema provider/cmd/$(PROVIDER)/schema.json --out sdk/java  --build gradle-nexus
 	cd sdk/java/ && \
 		echo "module fake_java_module // Exclude this directory from Go tools\n\ngo 1.17" > go.mod && \
 		gradle --console=plain build
