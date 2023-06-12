@@ -8,32 +8,90 @@ on:
       - main
 
 jobs:
-  build-provider:
+  build_sdk:
+    name: build_sdk
     runs-on: ubuntu-latest
-    name: Build SDKs
+    strategy:
+      fail-fast: true
+      matrix:
+        dotnetversion:
+          - 6.0.x
+        goversion:
+          - 1.20.x
+        nodeversion:
+          - 16.x
+        pythonversion:
+          - "3.9"
+        # javaversion:
+        # - "11"
+        language:
+        - nodejs
+        - python
+        - dotnet
+        - go
+        # - java
     steps:
-      - uses: actions/checkout@v2
+    - name: Checkout Repo
+      uses: actions/checkout@v2
 
-      - name: Build SDKs
-        run: make build_sdks
+    - name: Unshallow clone for tags
+      run: git fetch --prune --unshallow --tags
+    - name: Install Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{matrix.goversion}}
 
-      - name: Check worktree clean
-        run: |
-          git update-index -q --refresh
-          if ! git diff-files --quiet; then
-              >&2 echo "error: working tree is not clean, aborting!"
-              git status
-              git diff
-              exit 1
-          fi
+    - name: Install pulumictl
+      uses: jaxxstorm/action-install-gh-release@v1.2.0
+      with:
+        repo: pulumi/pulumictl
 
-      - name: Check gofmt
-        run: |
-          gofmt_files=$(find . -name '*.go' | grep -v vendor | xargs gofmt -l)
-          if [ -n "${gofmt_files}" ]; then
-              echo 'gofmt needs running on the following files:'
-              echo "${gofmt_files}"
-              echo "You can use the command: \`make fmt\` to reformat code."
-              exit 1
-          fi
+    - name: Install Pulumi CLI
+      uses: pulumi/action-install-pulumi-cli@v2
 
+    - if: ${{ matrix.language == 'nodejs'}}
+      name: Setup Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{matrix.nodeversion}}
+        registry-url: https://registry.npmjs.org
+
+    - if: ${{ matrix.language == 'dotnet'}}
+      name: Setup DotNet
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{matrix.dotnetversion}}
+
+    - if: ${{ matrix.language == 'python'}}
+      name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{matrix.pythonversion}}
+
+    - if: ${{ matrix.language == 'java'}}
+      name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        cache: gradle
+        distribution: temurin
+        java-version: ${{matrix.javaversion}}
+
+    - name: Update path
+      run: echo "${{ github.workspace }}/bin" >> $GITHUB_PATH
+
+    - name: Set PACKAGE_VERSION to Env
+      run: echo "PACKAGE_VERSION=v$(pulumictl get version --language generic)" >>
+        $GITHUB_ENV
+
+    - name: Build SDK
+      run: make build_${{ matrix.language }}
+
+    - name: Check worktree clean
+      run: |
+        git update-index -q --refresh
+        if ! git diff-files --quiet; then
+            >&2 echo "error: working tree is not clean, aborting!"
+            git status
+            git diff
+            exit 1
+        fi
