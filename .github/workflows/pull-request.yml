@@ -42,12 +42,12 @@ jobs:
         go-version: ${{matrix.goversion}}
 
     - name: Install pulumictl
-      uses: jaxxstorm/action-install-gh-release@v1.2.0
+      uses: jaxxstorm/action-install-gh-release@v1.10.0
       with:
         repo: pulumi/pulumictl
 
-    - name: Install Pulumi CLI
-      uses: pulumi/action-install-pulumi-cli@v2
+    - name: Install pulumi
+      uses: pulumi/actions@v4
 
     - if: ${{ matrix.language == 'nodejs'}}
       name: Setup Node
