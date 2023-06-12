@@ -41,7 +41,7 @@ validate_go_version: ## Validates the installed version of go
 
 upstream/.git:
 	@echo "Initializing upstream" ; \
-	git clone  --depth 1 --branch v1.16.0 git@github.com:fortinetdev/terraform-provider-fortios upstream
+	git clone  --depth 1 --branch v1.16.0 https://github.com/fortinetdev/terraform-provider-fortios.git upstream
 
 development:: install_plugins provider lint_provider build_sdks install_sdks cleanup # Build the provider & SDKs for a development environment
 
