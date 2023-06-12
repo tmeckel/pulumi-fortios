@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"strings"
+	"unicode"
 
 	"github.com/ettle/strcase"
 	"github.com/pulumi/pulumi-terraform-bridge/v3/pkg/tfbridge"
@@ -36,21 +37,30 @@ const (
 	mainMod = "index" // the fortios module
 )
 
-func convertName(name string) string {
-	idx := strings.Index(name, "_")
-	contract.Assertf(idx > 0 && idx < len(name)-1, "Invalid snake case name %s", name)
-	name = name[idx+1:]
-	contract.Assertf(len(name) > 0, "Invalid snake case name %s", name)
-	return strcase.ToPascal(name)
+func convertName(tfname string) (module string, name string) {
+	tfNameItems := strings.Split(tfname, "_")
+	contract.Assertf(len(tfNameItems) > 2, "Invalid snake case name %s", tfname)
+	contract.Assertf(tfNameItems[0] == "fortios", "Invalid snake case name %s. Does not start with fortios", tfname)
+	if len(tfNameItems) <= 2 {
+		module = mainMod
+		name = tfNameItems[1]
+	} else {
+		module = tfNameItems[1]
+		name = strings.Join(tfNameItems[2:], "_")
+	}
+	contract.Assertf(!unicode.IsDigit(rune(name[0])), "Pulumi name must not start with a digit: %s", name)
+	name = strcase.ToPascal(name)
+	return
 }
 
-func makeDataSource(mod string, name string) tokens.ModuleMember {
-	name = convertName(name)
+func makeDataSource(_ string, ds string) tokens.ModuleMember {
+	mod, name := convertName(ds)
 	return tfbridge.MakeDataSource("fortios", mod, "get"+name)
 }
 
-func makeResource(mod string, res string) tokens.Type {
-	return tfbridge.MakeResource("fortios", mod, convertName(res))
+func makeResource(_ string, res string) tokens.Type {
+	mod, name := convertName(res)
+	return tfbridge.MakeResource("fortios", mod, name)
 }
 
 // preConfigureCallback is called before the providerConfigure function of the underlying provider.
@@ -1070,7 +1080,7 @@ func Provider() tfbridge.ProviderInfo {
 				Tok: makeResource(mainMod, "fortios_sshfilter_profile"),
 			},
 			"fortios_switchcontroller_8021Xsettings": {
-				Tok: makeResource(mainMod, "fortios_switchcontroller_8021Xsettings"),
+				Tok: makeResource(mainMod, "fortios_switchcontroller_settings8021X"),
 			},
 			"fortios_switchcontroller_customcommand": {
 				Tok: makeResource(mainMod, "fortios_switchcontroller_customcommand"),
@@ -1214,7 +1224,7 @@ func Provider() tfbridge.ProviderInfo {
 				Tok: makeResource(mainMod, "fortios_switchcontrollerqos_queuepolicy"),
 			},
 			"fortios_switchcontrollersecuritypolicy_8021X": {
-				Tok: makeResource(mainMod, "fortios_switchcontrollersecuritypolicy_8021X"),
+				Tok: makeResource(mainMod, "fortios_switchcontrollersecuritypolicy_policy8021X"),
 			},
 			"fortios_switchcontrollersecuritypolicy_captiveportal": {
 				Tok: makeResource(mainMod, "fortios_switchcontrollersecuritypolicy_captiveportal"),
