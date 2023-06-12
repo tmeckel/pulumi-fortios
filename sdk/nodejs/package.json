@@ -1,0 +1,30 @@
+{
+    "name": "@pulumiverse/fortios",
+    "version": "${VERSION}",
+    "description": "A Pulumi package for creating and managing Fortios resources",
+    "keywords": [
+        "pulumi",
+        "fortios",
+        "category/cloud"
+    ],
+    "homepage": "https://github.com/pulumiverse/pulumi-fortios",
+    "repository": "https://github.com/pulumiverse/pulumi-fortios",
+    "license": "Apache-2.0",
+    "scripts": {
+        "build": "tsc",
+        "install": "node scripts/install-pulumi-plugin.js resource fortios ${VERSION}"
+    },
+    "dependencies": {
+        "@pulumi/pulumi": "^3.0.0"
+    },
+    "devDependencies": {
+        "@types/mime": "^2.0.0",
+        "@types/node": "^10.0.0",
+        "typescript": "^4.3.5"
+    },
+    "pulumi": {
+        "resource": true,
+        "name": "fortios",
+        "server": "github://api.github.com/pulumiverse/pulumi-fortios"
+    }
+}
