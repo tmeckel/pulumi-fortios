@@ -3,12 +3,10 @@ name: build
 
 on:
   pull_request:
-  push:
-    branches:
-      - main
     paths-ignore:
       - docs
       - .devcontainer
+      - examples
 
 jobs:
   build_sdk:
