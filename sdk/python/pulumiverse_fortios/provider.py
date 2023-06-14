@@ -43,36 +43,68 @@ class ProviderArgs:
         :param pulumi.Input[str] http_proxy: HTTP proxy address
         :param pulumi.Input[str] peerauth: Enable/disable peer authentication, can be 'enable' or 'disable'
         """
+        if cabundlecontent is None:
+            cabundlecontent = _utilities.get_env('FORTIOS_CA_CABUNDLECONTENT')
         if cabundlecontent is not None:
             pulumi.set(__self__, "cabundlecontent", cabundlecontent)
+        if cabundlefile is None:
+            cabundlefile = _utilities.get_env('FORTIOS_CA_CABUNDLE')
         if cabundlefile is not None:
             pulumi.set(__self__, "cabundlefile", cabundlefile)
+        if cacert is None:
+            cacert = _utilities.get_env('FORTIOS_CA_CACERT')
         if cacert is not None:
             pulumi.set(__self__, "cacert", cacert)
+        if clientcert is None:
+            clientcert = _utilities.get_env('FORTIOS_CA_CLIENTCERT')
         if clientcert is not None:
             pulumi.set(__self__, "clientcert", clientcert)
+        if clientkey is None:
+            clientkey = _utilities.get_env('FORTIOS_CA_CLIENTKEY')
         if clientkey is not None:
             pulumi.set(__self__, "clientkey", clientkey)
+        if fmg_cabundlefile is None:
+            fmg_cabundlefile = _utilities.get_env('FORTIOS_FMG_CABUNDLE')
         if fmg_cabundlefile is not None:
             pulumi.set(__self__, "fmg_cabundlefile", fmg_cabundlefile)
+        if fmg_hostname is None:
+            fmg_hostname = _utilities.get_env('FORTIOS_FMG_HOSTNAME')
         if fmg_hostname is not None:
             pulumi.set(__self__, "fmg_hostname", fmg_hostname)
+        if fmg_insecure is None:
+            fmg_insecure = _utilities.get_env_bool('FORTIOS_FMG_INSECURE')
         if fmg_insecure is not None:
             pulumi.set(__self__, "fmg_insecure", fmg_insecure)
+        if fmg_passwd is None:
+            fmg_passwd = _utilities.get_env('FORTIOS_FMG_PASSWORD')
         if fmg_passwd is not None:
             pulumi.set(__self__, "fmg_passwd", fmg_passwd)
+        if fmg_username is None:
+            fmg_username = _utilities.get_env('FORTIOS_FMG_USERNAME')
         if fmg_username is not None:
             pulumi.set(__self__, "fmg_username", fmg_username)
+        if hostname is None:
+            hostname = _utilities.get_env('FORTIOS_ACCESS_HOSTNAME')
         if hostname is not None:
             pulumi.set(__self__, "hostname", hostname)
+        if http_proxy is None:
+            http_proxy = _utilities.get_env('FORTIOS_HTTP_PROXY')
         if http_proxy is not None:
             pulumi.set(__self__, "http_proxy", http_proxy)
+        if insecure is None:
+            insecure = _utilities.get_env_bool('FORTIOS_INSECURE')
         if insecure is not None:
             pulumi.set(__self__, "insecure", insecure)
+        if peerauth is None:
+            peerauth = _utilities.get_env('FORTIOS_CA_PEERAUTH')
         if peerauth is not None:
             pulumi.set(__self__, "peerauth", peerauth)
+        if token is None:
+            token = _utilities.get_env('FORTIOS_ACCESS_TOKEN')
         if token is not None:
             pulumi.set(__self__, "token", token)
+        if vdom is None:
+            vdom = _utilities.get_env('FORTIOS_VDOM')
         if vdom is not None:
             pulumi.set(__self__, "vdom", vdom)
 
@@ -344,22 +376,56 @@ class Provider(pulumi.ProviderResource):
                 raise TypeError('__props__ is only valid when passed in combination with a valid opts.id to get an existing resource')
             __props__ = ProviderArgs.__new__(ProviderArgs)
 
+            if cabundlecontent is None:
+                cabundlecontent = _utilities.get_env('FORTIOS_CA_CABUNDLECONTENT')
             __props__.__dict__["cabundlecontent"] = cabundlecontent
+            if cabundlefile is None:
+                cabundlefile = _utilities.get_env('FORTIOS_CA_CABUNDLE')
             __props__.__dict__["cabundlefile"] = cabundlefile
+            if cacert is None:
+                cacert = _utilities.get_env('FORTIOS_CA_CACERT')
             __props__.__dict__["cacert"] = cacert
+            if clientcert is None:
+                clientcert = _utilities.get_env('FORTIOS_CA_CLIENTCERT')
             __props__.__dict__["clientcert"] = clientcert
-            __props__.__dict__["clientkey"] = clientkey
+            if clientkey is None:
+                clientkey = _utilities.get_env('FORTIOS_CA_CLIENTKEY')
+            __props__.__dict__["clientkey"] = None if clientkey is None else pulumi.Output.secret(clientkey)
+            if fmg_cabundlefile is None:
+                fmg_cabundlefile = _utilities.get_env('FORTIOS_FMG_CABUNDLE')
             __props__.__dict__["fmg_cabundlefile"] = fmg_cabundlefile
+            if fmg_hostname is None:
+                fmg_hostname = _utilities.get_env('FORTIOS_FMG_HOSTNAME')
             __props__.__dict__["fmg_hostname"] = fmg_hostname
+            if fmg_insecure is None:
+                fmg_insecure = _utilities.get_env_bool('FORTIOS_FMG_INSECURE')
             __props__.__dict__["fmg_insecure"] = pulumi.Output.from_input(fmg_insecure).apply(pulumi.runtime.to_json) if fmg_insecure is not None else None
-            __props__.__dict__["fmg_passwd"] = fmg_passwd
+            if fmg_passwd is None:
+                fmg_passwd = _utilities.get_env('FORTIOS_FMG_PASSWORD')
+            __props__.__dict__["fmg_passwd"] = None if fmg_passwd is None else pulumi.Output.secret(fmg_passwd)
+            if fmg_username is None:
+                fmg_username = _utilities.get_env('FORTIOS_FMG_USERNAME')
             __props__.__dict__["fmg_username"] = fmg_username
+            if hostname is None:
+                hostname = _utilities.get_env('FORTIOS_ACCESS_HOSTNAME')
             __props__.__dict__["hostname"] = hostname
+            if http_proxy is None:
+                http_proxy = _utilities.get_env('FORTIOS_HTTP_PROXY')
             __props__.__dict__["http_proxy"] = http_proxy
+            if insecure is None:
+                insecure = _utilities.get_env_bool('FORTIOS_INSECURE')
             __props__.__dict__["insecure"] = pulumi.Output.from_input(insecure).apply(pulumi.runtime.to_json) if insecure is not None else None
+            if peerauth is None:
+                peerauth = _utilities.get_env('FORTIOS_CA_PEERAUTH')
             __props__.__dict__["peerauth"] = peerauth
-            __props__.__dict__["token"] = token
+            if token is None:
+                token = _utilities.get_env('FORTIOS_ACCESS_TOKEN')
+            __props__.__dict__["token"] = None if token is None else pulumi.Output.secret(token)
+            if vdom is None:
+                vdom = _utilities.get_env('FORTIOS_VDOM')
             __props__.__dict__["vdom"] = vdom
+        secret_opts = pulumi.ResourceOptions(additional_secret_outputs=["clientkey", "fmgPasswd", "token"])
+        opts = pulumi.ResourceOptions.merge(opts, secret_opts)
         super(Provider, __self__).__init__(
             'fortios',
             resource_name,

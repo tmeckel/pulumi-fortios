@@ -20,92 +20,92 @@ class _ExportableConfig(types.ModuleType):
         """
         CA Bundle file content
         """
-        return __config__.get('cabundlecontent')
+        return __config__.get('cabundlecontent') or _utilities.get_env('FORTIOS_CA_CABUNDLECONTENT')
 
     @property
     def cabundlefile(self) -> Optional[str]:
         """
         CA Bundle file
         """
-        return __config__.get('cabundlefile')
+        return __config__.get('cabundlefile') or _utilities.get_env('FORTIOS_CA_CABUNDLE')
 
     @property
     def cacert(self) -> Optional[str]:
         """
         CA certtificate(Optional)
         """
-        return __config__.get('cacert')
+        return __config__.get('cacert') or _utilities.get_env('FORTIOS_CA_CACERT')
 
     @property
     def clientcert(self) -> Optional[str]:
         """
         User certificate
         """
-        return __config__.get('clientcert')
+        return __config__.get('clientcert') or _utilities.get_env('FORTIOS_CA_CLIENTCERT')
 
     @property
     def clientkey(self) -> Optional[str]:
         """
         User private key
         """
-        return __config__.get('clientkey')
+        return __config__.get('clientkey') or _utilities.get_env('FORTIOS_CA_CLIENTKEY')
 
     @property
     def fmg_cabundlefile(self) -> Optional[str]:
         """
         CA Bundle file
         """
-        return __config__.get('fmgCabundlefile')
+        return __config__.get('fmgCabundlefile') or _utilities.get_env('FORTIOS_FMG_CABUNDLE')
 
     @property
     def fmg_hostname(self) -> Optional[str]:
         """
         Hostname/IP address of the FortiManager to connect to
         """
-        return __config__.get('fmgHostname')
+        return __config__.get('fmgHostname') or _utilities.get_env('FORTIOS_FMG_HOSTNAME')
 
     @property
     def fmg_insecure(self) -> Optional[bool]:
-        return __config__.get_bool('fmgInsecure')
+        return __config__.get_bool('fmgInsecure') or _utilities.get_env_bool('FORTIOS_FMG_INSECURE')
 
     @property
     def fmg_passwd(self) -> Optional[str]:
-        return __config__.get('fmgPasswd')
+        return __config__.get('fmgPasswd') or _utilities.get_env('FORTIOS_FMG_PASSWORD')
 
     @property
     def fmg_username(self) -> Optional[str]:
-        return __config__.get('fmgUsername')
+        return __config__.get('fmgUsername') or _utilities.get_env('FORTIOS_FMG_USERNAME')
 
     @property
     def hostname(self) -> Optional[str]:
         """
         The hostname/IP address of the FortiOS to be connected
         """
-        return __config__.get('hostname')
+        return __config__.get('hostname') or _utilities.get_env('FORTIOS_ACCESS_HOSTNAME')
 
     @property
     def http_proxy(self) -> Optional[str]:
         """
         HTTP proxy address
         """
-        return __config__.get('httpProxy')
+        return __config__.get('httpProxy') or _utilities.get_env('FORTIOS_HTTP_PROXY')
 
     @property
     def insecure(self) -> Optional[bool]:
-        return __config__.get_bool('insecure')
+        return __config__.get_bool('insecure') or _utilities.get_env_bool('FORTIOS_INSECURE')
 
     @property
     def peerauth(self) -> Optional[str]:
         """
         Enable/disable peer authentication, can be 'enable' or 'disable'
         """
-        return __config__.get('peerauth')
+        return __config__.get('peerauth') or _utilities.get_env('FORTIOS_CA_PEERAUTH')
 
     @property
     def token(self) -> Optional[str]:
-        return __config__.get('token')
+        return __config__.get('token') or _utilities.get_env('FORTIOS_ACCESS_TOKEN')
 
     @property
     def vdom(self) -> Optional[str]:
-        return __config__.get('vdom')
+        return __config__.get('vdom') or _utilities.get_env('FORTIOS_VDOM')
 
