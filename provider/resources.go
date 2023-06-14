@@ -22,9 +22,7 @@ import (
 
 	"github.com/ettle/strcase"
 	"github.com/pulumi/pulumi-terraform-bridge/v3/pkg/tfbridge"
-	shim "github.com/pulumi/pulumi-terraform-bridge/v3/pkg/tfshim"
 	shimv2 "github.com/pulumi/pulumi-terraform-bridge/v3/pkg/tfshim/sdk-v2"
-	"github.com/pulumi/pulumi/sdk/v3/go/common/resource"
 	"github.com/pulumi/pulumi/sdk/v3/go/common/tokens"
 	"github.com/pulumi/pulumi/sdk/v3/go/common/util/contract"
 	"github.com/pulumiverse/pulumi-fortios/provider/pkg/version"
@@ -43,9 +41,9 @@ var module_overrides = map[string]string{
 
 func convertName(tfname string) (module string, name string) {
 	tfNameItems := strings.Split(tfname, "_")
-	contract.Assertf(len(tfNameItems) > 2, "Invalid snake case name %s", tfname)
+	contract.Assertf(len(tfNameItems) >= 2, "Invalid snake case name %s", tfname)
 	contract.Assertf(tfNameItems[0] == "fortios", "Invalid snake case name %s. Does not start with fortios", tfname)
-	if len(tfNameItems) <= 2 {
+	if len(tfNameItems) == 2 {
 		module = mainMod
 		name = tfNameItems[1]
 	} else {
@@ -68,14 +66,6 @@ func makeDataSource(_ string, ds string) tokens.ModuleMember {
 func makeResource(_ string, res string) tokens.Type {
 	mod, name := convertName(res)
 	return tfbridge.MakeResource("fortios", mod, name)
-}
-
-// preConfigureCallback is called before the providerConfigure function of the underlying provider.
-// It should validate that the provider can be configured, and provide actionable errors in the case
-// it cannot be. Configuration variables can be read from `vars` using the `stringValue` function -
-// for example `stringValue(vars, "accessKey")`.
-func preConfigureCallback(vars resource.PropertyMap, c shim.ResourceConfig) error {
-	return nil
 }
 
 // Provider returns additional overlaid schema and metadata associated with the provider..
@@ -120,7 +110,7 @@ func Provider() tfbridge.ProviderInfo {
 		// should match the TF provider module's require directive, not any replace directives.
 		Version:   version.Version,
 		GitHubOrg: "fortinetdev",
-		Config:    map[string]*tfbridge.SchemaInfo{
+		Config: map[string]*tfbridge.SchemaInfo{
 			// Add any required configuration here, or remove the example below if
 			// no additional points are required.
 			// "region": {
@@ -129,8 +119,106 @@ func Provider() tfbridge.ProviderInfo {
 			// 		EnvVars: []string{"AWS_REGION", "AWS_DEFAULT_REGION"},
 			// 	},
 			// },
+			"hostname": {
+				MarkAsOptional: tfbridge.True(),
+				Default: &tfbridge.DefaultInfo{
+					EnvVars: []string{"FORTIOS_ACCESS_HOSTNAME"},
+				},
+			},
+			"token": {
+				MarkAsOptional: tfbridge.True(),
+				Secret:         tfbridge.True(),
+				Default: &tfbridge.DefaultInfo{
+					EnvVars: []string{"FORTIOS_ACCESS_TOKEN"},
+				},
+			},
+			"insecure": {
+				MarkAsOptional: tfbridge.True(),
+				Default: &tfbridge.DefaultInfo{
+					EnvVars: []string{"FORTIOS_INSECURE"},
+				},
+			},
+			"cabundlefile": {
+				MarkAsOptional: tfbridge.True(),
+				Default: &tfbridge.DefaultInfo{
+					EnvVars: []string{"FORTIOS_CA_CABUNDLE"},
+				},
+			},
+			"cabundlecontent": {
+				MarkAsOptional: tfbridge.True(),
+				Default: &tfbridge.DefaultInfo{
+					EnvVars: []string{"FORTIOS_CA_CABUNDLECONTENT"},
+				},
+			},
+			"http_proxy": {
+				MarkAsOptional: tfbridge.True(),
+				Default: &tfbridge.DefaultInfo{
+					EnvVars: []string{"FORTIOS_HTTP_PROXY"},
+				},
+			},
+			"peerauth": {
+				MarkAsOptional: tfbridge.True(),
+				Default: &tfbridge.DefaultInfo{
+					EnvVars: []string{"FORTIOS_CA_PEERAUTH"},
+				},
+			},
+			"cacert": {
+				MarkAsOptional: tfbridge.True(),
+				Default: &tfbridge.DefaultInfo{
+					EnvVars: []string{"FORTIOS_CA_CACERT"},
+				},
+			},
+			"clientcert": {
+				MarkAsOptional: tfbridge.True(),
+				Default: &tfbridge.DefaultInfo{
+					EnvVars: []string{"FORTIOS_CA_CLIENTCERT"},
+				},
+			},
+			"clientkey": {
+				MarkAsOptional: tfbridge.True(),
+				Secret:         tfbridge.True(),
+				Default: &tfbridge.DefaultInfo{
+					EnvVars: []string{"FORTIOS_CA_CLIENTKEY"},
+				},
+			},
+			"vdom": {
+				MarkAsOptional: tfbridge.True(),
+				Default: &tfbridge.DefaultInfo{
+					EnvVars: []string{"FORTIOS_VDOM"},
+				},
+			},
+			"fmg_hostname": {
+				MarkAsOptional: tfbridge.True(),
+				Default: &tfbridge.DefaultInfo{
+					EnvVars: []string{"FORTIOS_FMG_HOSTNAME"},
+				},
+			},
+			"fmg_username": {
+				MarkAsOptional: tfbridge.True(),
+				Default: &tfbridge.DefaultInfo{
+					EnvVars: []string{"FORTIOS_FMG_USERNAME"},
+				},
+			},
+			"fmg_passwd": {
+				MarkAsOptional: tfbridge.True(),
+				Secret:         tfbridge.True(),
+				Default: &tfbridge.DefaultInfo{
+					EnvVars: []string{"FORTIOS_FMG_PASSWORD"},
+				},
+			},
+			"fmg_insecure": {
+				MarkAsOptional: tfbridge.True(),
+				Default: &tfbridge.DefaultInfo{
+					EnvVars: []string{"FORTIOS_FMG_INSECURE"},
+				},
+			},
+			"fmg_cabundlefile": {
+				MarkAsOptional: tfbridge.True(),
+				Default: &tfbridge.DefaultInfo{
+					EnvVars: []string{"FORTIOS_FMG_CABUNDLE"},
+				},
+			},
 		},
-		PreConfigureCallback: preConfigureCallback,
 		Resources: map[string]*tfbridge.ResourceInfo{
 			// Map each resource in the Terraform provider to a Pulumi type. Two examples
 			// are below - the single line form is the common case. The multi-line form is
